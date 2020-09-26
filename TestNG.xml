@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="com.testcases.GoogleTest" verbose="0">
+  <test thread-count="5" name="Command line test" verbose="0">
+    <classes>
+      <class name="com.testcases.GoogleTest"/>
+    </classes>
+  </test> <!-- Command line test -->
+</suite> <!-- com.testcases.GoogleTest -->

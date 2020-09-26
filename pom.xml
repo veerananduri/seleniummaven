@@ -1,0 +1,40 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.seleniummaven</groupId>
+  <artifactId>seleniummaven</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>Selenium Maven TestNG Github Integration Project</name>
+  <description>Selenium Maven TestNG Github Integration Project</description>
+  
+  <properties>
+   	<maven.compiler.source>1.8</maven.compiler.source>
+   	<maven.compiler.target>1.8</maven.compiler.target>
+   	<selenium.version>3.141.59</selenium.version>
+  </properties>
+  
+  <!-- https://mvnrepository.com/artifact/org.testng/testng -->
+  <dependencies>
+  	<dependency>
+	    <groupId>org.testng</groupId>
+	    <artifactId>testng</artifactId>
+	    <version>7.3.0</version>
+	</dependency>
+	<dependency>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>selenium-java</artifactId>
+        <version>${selenium.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>selenium-firefox-driver</artifactId>
+        <version>${selenium.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>selenium-server</artifactId>
+        <version>${selenium.version}</version>
+    </dependency>
+    
+  </dependencies>	
+  
+</project>
