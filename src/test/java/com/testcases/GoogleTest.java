@@ -1,16 +1,22 @@
 package com.testcases;
 
+import java.util.Map;
+
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.pageobjects.WordPressLoginPO;
 import com.utils.Commons;
+import com.utils.ExcelUtils;
+import com.utils.PropertyReaderUtil;
 import com.utils.Setup;
 
 public class GoogleTest extends Setup {
 	
 	Commons commons;
+	PropertyReaderUtil propUtil = new PropertyReaderUtil();
 	
 	public void initTest() {
 		RemoteWebDriver driver = callDriver();
@@ -20,10 +26,10 @@ public class GoogleTest extends Setup {
 	
 	WordPressLoginPO wordPressLoginPO = new WordPressLoginPO();
 	
-	@Test(priority=1)
+	@Test(priority=4)
 	public void printTest() {
 		System.out.println("================================================");
-		System.out.println("================TEST METHOD 1===================");
+		System.out.println("================printTest()=====================");
 		System.out.println("================================================");
 		System.out.println("This is my first test");
 	}
@@ -31,7 +37,7 @@ public class GoogleTest extends Setup {
 	@Test(priority=2)
 	public void googleSearchTest() {
 		System.out.println("================================================");
-		System.out.println("================TEST METHOD 2===================");
+		System.out.println("================googleSearchTest()==============");
 		System.out.println("================================================");
 		
 		//Initialize the driver
@@ -47,7 +53,24 @@ public class GoogleTest extends Setup {
 	@Test(priority=3)
 	public void loginTest() {
 		System.out.println("================================================");
-		System.out.println("================TEST METHOD 3===================");
+		System.out.println("================loginTest()=====================");
+		System.out.println("================================================");
+		
+		//Initialize the driver
+		initTest();
+		
+		//Login to the Website
+		driver.get(propUtil.getProperty("url"));
+		commons.typeValue(wordPressLoginPO.loginField(), "opensourcecms");
+		commons.typeValue(wordPressLoginPO.pwdField(), "opensourcecms");
+		commons.clickElement(wordPressLoginPO.clickSubmit());
+		
+	}
+	
+	@Test(priority=1, dataProvider = "Authentication")
+	public void dataProviderTest(String username, String password) {
+		System.out.println("================================================");
+		System.out.println("================dataProviderTest()==============");
 		System.out.println("================================================");
 		
 		//Initialize the driver
@@ -55,9 +78,18 @@ public class GoogleTest extends Setup {
 		
 		//Login to the Website
 		driver.get("https://s1.demo.opensourcecms.com/wordpress/wp-login.php");
-		commons.typeValue(wordPressLoginPO.loginField(), "opensourcecms");
-		commons.typeValue(wordPressLoginPO.pwdField(), "opensourcecms");
+		commons.typeValue(wordPressLoginPO.loginField(), username);
+		commons.typeValue(wordPressLoginPO.pwdField(), password);
 		commons.clickElement(wordPressLoginPO.clickSubmit());
 		
 	}
+	
+	@DataProvider(name = "Authentication")
+	public static Object[][] Authentication() throws Exception{
+		 
+        Object[][] testObjArray = ExcelUtils.readExcel("C:\\Users\\ganga\\eclipse-workspace\\seleniummaven\\src\\test\\resources\\TestData.xlsx",
+       		 "Sheet1");
+
+        return (testObjArray);
+	 }
 }

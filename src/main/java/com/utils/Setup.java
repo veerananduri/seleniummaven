@@ -23,14 +23,14 @@ public class Setup {
 
 	@AfterMethod (alwaysRun=true)
 	public void afterMethod(ITestResult itestResult) {
-		if(driver!=null) {
-			if(itestResult.getStatus() == 1) {
-				System.out.println("Testcase is Passed");
-			} else if (itestResult.getStatus() == 2) {
-				System.out.println("Testcase is Failed");
-			} else {
-				System.out.println("Testcase is Skipped");
-			}
+		if(itestResult.getStatus() == 1) {
+			System.out.println("Testcase is Passed");
+		} else if (itestResult.getStatus() == 2) {
+			System.out.println("Testcase is Failed");
+		} else {
+			System.out.println("Testcase is Skipped");
+		}
+		if(driver!=null) {			
 			driver.close();
 			driver.quit();			
 		} else {
