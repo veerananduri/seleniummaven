@@ -2,10 +2,15 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 <suite name="com.testcases.GoogleTest" verbose="0">
 	<listeners>
-		<listener class-name="com.framework.MyReportListener" />
+		<listener class-name="com.framework.MyReporterListener" />
 	</listeners>
 
 	<test thread-count="5" name="Sample Tests" verbose="0">
+		<groups>
+			<run>
+				<include name="test"></include>
+			</run>
+		</groups>
 		<classes>
 			<class name="com.testcases.GoogleTest" />
 		</classes>

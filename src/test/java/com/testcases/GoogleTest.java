@@ -1,7 +1,5 @@
 package com.testcases;
 
-import java.util.Map;
-
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -50,7 +48,7 @@ public class GoogleTest extends Setup {
 		
 	}
 	
-	@Test(priority=3)
+	@Test(priority=3, groups = "test")
 	public void loginTest() {
 		System.out.println("================================================");
 		System.out.println("================loginTest()=====================");
@@ -60,7 +58,7 @@ public class GoogleTest extends Setup {
 		initTest();
 		
 		//Login to the Website
-		driver.get(propUtil.getProperty("url"));
+		driver.get(PropertyReaderUtil.getProperty("url"));
 		commons.typeValue(wordPressLoginPO.loginField(), "opensourcecms");
 		commons.typeValue(wordPressLoginPO.pwdField(), "opensourcecms");
 		commons.clickElement(wordPressLoginPO.clickSubmit());
@@ -87,7 +85,7 @@ public class GoogleTest extends Setup {
 	@DataProvider(name = "Authentication")
 	public static Object[][] Authentication() throws Exception{
 		 
-        Object[][] testObjArray = ExcelUtils.readExcel("C:\\Users\\ganga\\eclipse-workspace\\seleniummaven\\src\\test\\resources\\TestData.xlsx",
+        Object[][] testObjArray = ExcelUtils.readExcel(System.getProperty("user.dir")+"\\src\\test\\resources\\TestData.xlsx",
        		 "Sheet1");
 
         return (testObjArray);
