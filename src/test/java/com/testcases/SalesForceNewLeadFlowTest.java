@@ -2,6 +2,7 @@ package com.testcases;
 
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.DataProvider;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import com.pageobjects.SalesForceNewLeadPageObjects;
@@ -9,7 +10,9 @@ import com.utils.Commons;
 import com.utils.ExcelUtils;
 import com.utils.PropertyReaderUtil;
 import com.utils.Setup;
+import com.aventstack.extentreports.testng.listener.ExtentITestListenerClassAdapter;
 
+@Listeners({ ExtentITestListenerClassAdapter.class })
 public class SalesForceNewLeadFlowTest extends Setup {
 	
 	Commons commons;

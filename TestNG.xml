@@ -3,16 +3,17 @@
 <suite name="com.testcases.GoogleTest" verbose="0">
 	<listeners>
 		<listener class-name="com.framework.MyReporterListener" />
+		<listener class-name="com.framework.ExtentTestNGIReportListener" />
 	</listeners>
 
 	<test thread-count="5" name="Sample Tests" verbose="0">
-		<groups>
+		<!-- <groups>
 			<run>
 				<include name="test"></include>
 			</run>
-		</groups>
+		</groups> -->
 		<classes>
-			<class name="com.testcases.GoogleTest" />
+			<class name="com.testcases.SalesForceNewLeadFlowTest" />
 		</classes>
 	</test> <!-- Command line test -->
 </suite> <!-- com.testcases.GoogleTest -->

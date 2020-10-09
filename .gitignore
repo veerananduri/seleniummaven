@@ -1,3 +1,8 @@
 /target/
 /bin/
 /test-output/
+//*.html
+*.html
+//*.log
+//*.png
+*.log

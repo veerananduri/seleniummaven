@@ -1,6 +1,8 @@
 package com.utils;
 
+
 import org.openqa.selenium.By;
+
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -45,16 +47,6 @@ public class Commons extends Setup {
 	}
 	
 	
-	public void focusToAnotherWindow() {
-		// Store the current window handle
-		String winHandleBefore = driver.getWindowHandle();
-
-		// Perform the click operation that opens new window
-
-		// Switch to new window opened
-		for(String winHandle : driver.getWindowHandles()){
-		    driver.switchTo().window(winHandle);
-		}
-	}
+	
 	 
 }

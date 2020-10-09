@@ -45,6 +45,7 @@ public class GoogleTest extends Setup {
 		driver.get("https://google.com");
 		String title = driver.getTitle();
 		Assert.assertEquals(title, "Google", "Title Validation");
+		Assert.fail("Testing failed test case");
 		
 	}
 	
@@ -60,8 +61,9 @@ public class GoogleTest extends Setup {
 		//Login to the Website
 		driver.get(PropertyReaderUtil.getProperty("url"));
 		commons.typeValue(wordPressLoginPO.loginField(), "opensourcecms");
-		commons.typeValue(wordPressLoginPO.pwdField(), "opensourcecms");
+		commons.typeValue(wordPressLoginPO.pwdField(), "test");
 		commons.clickElement(wordPressLoginPO.clickSubmit());
+		Assert.fail();
 		
 	}
 	
