@@ -16,10 +16,8 @@ import com.utils.PropertyReaderUtil;
 
 import org.testng.*;
 
-public class ExtentTestNGIReportListener implements IReporter {
+public class ExtentTestNGIReportListener implements IReporter, Constants {
 	
-	private static final String OUTPUT_FOLDER = "./src/test/resources/Reports/";
-	private static final String FILE_NAME = "Extent_Report.html";
 	ExtentReports extent = new ExtentReports();
 	ExtentTest test;
 
@@ -78,12 +76,10 @@ public class ExtentTestNGIReportListener implements IReporter {
                 if (result.getStatus() == ITestResult.FAILURE) {
                 	test.fail(result.getTestClass().getName()
                             + "." + result.getMethod().getMethodName(),
-                    MediaEntityBuilder.createScreenCaptureFromPath(System.getProperty("user.dir")
-                            + "/src/test/resources/Reports/Images/" + result.getTestClass().getName()
+                    MediaEntityBuilder.createScreenCaptureFromPath(IMAGES_FOLDER + result.getTestClass().getName()
                             + "." + result.getMethod().getMethodName() + ".png").build());
 
-                	test.addScreenCaptureFromPath(System.getProperty("user.dir")
-                    + "./src/test/resources/Reports/Images/"
+                	test.addScreenCaptureFromPath(IMAGES_FOLDER
                     + result.getTestClass().getName()
                     + "." + result.getMethod().getMethodName() + ".png");
 

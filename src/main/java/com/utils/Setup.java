@@ -3,12 +3,14 @@ package com.utils;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.service.ExtentTestManager;
+import com.framework.Constants;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,9 +36,8 @@ import ru.yandex.qatools.ashot.Screenshot;
 import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
 
 
-public class Setup {
-
-	private static final String IMG_NAME = System.getProperty("user.dir")+"\\test-output\\screenshot_%d.png";
+public class Setup implements Constants {
+	
 	protected static RemoteWebDriver driver;
 	ExtentReports extentReports = new ExtentReports();
 	static Map<Integer, ExtentTest> extentTestMap = new HashMap<>();
@@ -71,6 +72,18 @@ public class Setup {
 		return driver;
 	}
 	
+	@BeforeSuite
+	public void beforeSuite() {
+		File report_directory = new File(OUTPUT_FOLDER);
+		File image_directory = new File(IMAGES_FOLDER);
+		
+		if(!report_directory.exists())
+			report_directory.mkdirs();
+		
+		if(!image_directory.exists())
+			image_directory.mkdirs();
+	}
+	
 	@BeforeMethod (alwaysRun=true)
 	public void beforeMethod(Method method) {
 		ExtentTest test = extentReports.createTest(method.getName());
@@ -90,7 +103,7 @@ public class Setup {
 			getTest().log(Status.FAIL, getStackTrace(itestResult.getThrowable()));
 			//takeScreenshot(itestResult);
 			try {
-				saveFullPageScreenshot("./src/test/resources/Reports/Images/" + itestResult.getTestClass().getName() + "."
+				saveFullPageScreenshot(IMAGES_FOLDER + itestResult.getTestClass().getName() + "."
 						+ itestResult.getMethod().getMethodName() + ".png");
 			} catch (IOException e) {
 				getTest().log(Status.FAIL, "Screenshot Exception");
