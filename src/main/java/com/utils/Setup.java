@@ -52,8 +52,8 @@ public class Setup implements Constants {
 		if(browser.equalsIgnoreCase("Chrome")) {
 			/*
 			 * System.setProperty("webdriver.chrome.driver",
-			 * System.getProperty("user.dir")+"\\drivers\\chromedriver.exe"); driver = new
-			 * ChromeDriver();
+			 * System.getProperty("user.dir")+"\\drivers\\chromedriver.exe"); 
+			 * driver = new ChromeDriver();
 			 */
 			WebDriverManager.chromedriver().setup();
 			ChromeOptions options = new ChromeOptions();
@@ -116,8 +116,8 @@ public class Setup implements Constants {
 			System.out.println("Testcase is Passed");
 		} else if (itestResult.getStatus() == 2) {
 			getTest().log(Status.FAIL, getStackTrace(itestResult.getThrowable()));
-			test.log(Status.INFO, "********************************************<br>Testcase Failed<br>********************************************");
-			Reporter.log("********************************************<br>Testcase Failed<br>********************************************");
+			test.log(Status.INFO, "********************************************<br>Testcase Failed<br>********************************************<br>");
+			Reporter.log("********************************************<br>Testcase Failed<br>********************************************<br><br>");
 			//takeScreenshot(itestResult);
 			try {
 				saveFullPageScreenshot(IMAGES_FOLDER + itestResult.getTestClass().getName() + "."
@@ -173,8 +173,7 @@ public class Setup implements Constants {
 	
 	@AfterSuite(alwaysRun=true)
 	public void afterSuite() {
-		getTest().getExtent().flush();
-		
+		getTest().getExtent().flush();		
 	}
 	
 }

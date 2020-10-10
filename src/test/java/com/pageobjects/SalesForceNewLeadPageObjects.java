@@ -101,7 +101,7 @@ public class SalesForceNewLeadPageObjects extends Commons{
 	// There is an iframe for search results, and title = Results
 
 	public By selectSearchResult(String searchText) {
-		By result = By.xpath("//a[text()='" + searchText + "']");
+		By result = By.xpath("//a[contains(text(),'" + searchText + "')]");
 		return result;
 	}
 
@@ -132,7 +132,7 @@ public class SalesForceNewLeadPageObjects extends Commons{
 	}
 
 	public By selectStartDate(String program) {
-		By date = By.xpath("//td[text()='" + program + "']/preceding-sibling::th/a");
+		By date = By.xpath("//td[contains(text(),'" + program + "')]/preceding-sibling::th/a");
 		return date;
 	}
 
@@ -297,8 +297,9 @@ public class SalesForceNewLeadPageObjects extends Commons{
 		
 		//Save the lead
 		clickElement(saveLead());
-		reportLog("New Lead Saved for the program :" +program);
-		reportLog("Firstname and Lastname Details:" +firstName+" "+lastName);
+		reportLog("New Lead Saved for the program : " +program);
+		reportLog("Firstname and Lastname Details : " +firstName+" "+lastName);
+		reportLog("Opportunity : " + company);
 		
 		Assert.assertTrue(true, "Testcase Passed");
 		getTest().log(Status.INFO, "New Lead Saved");
@@ -340,7 +341,7 @@ public class SalesForceNewLeadPageObjects extends Commons{
 		selectByVisibleText(selectStage(), "Student");
 		clickElement(saveLead());
 		
-		//Retreive the student program #
+		//Retrieve the student program #
 		String studentProgNumber = getText(studentProgramNum());
 		reportLog("Student Program Number : " + studentProgNumber);
 		

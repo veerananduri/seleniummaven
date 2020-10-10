@@ -1,5 +1,8 @@
 package com.testcases;
 
+import java.util.Map;
+
+import org.testng.Reporter;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -22,26 +25,28 @@ public class SalesForceNewLeadFlowTest extends Setup {
 	
 	
 	@Test (dataProvider = "StudentData")
-	public void createNewLead(String username, String password, String studentProgram, String date) {
+	public void createNewLead(Map<String, String> data) {
+		
+		Reporter.log("Test case with data : " + data.get("StudentProgram") + "<br><br>");
 		
 		//Initialize the driver
 		initTest();
 		
 		//Login
-		salesForceNewLeadPageObjects.loginToSalesforce(username, password);
+		salesForceNewLeadPageObjects.loginToSalesforce(data.get("Login"), data.get("Password"));
 		
 		//Navigate to classic view
 		salesForceNewLeadPageObjects.navigateToClassicView();
 		
 		//Create new lead
-		salesForceNewLeadPageObjects.createNewLead(studentProgram, date);
+		salesForceNewLeadPageObjects.createNewLead(data.get("StudentProgram"), data.get("StartDate"));
 	}
 	
 	
 	@DataProvider(name = "StudentData")
 	public static Object[][] StudentData() throws Exception{
 		 
-        Object[][] testObjArray = ExcelUtils.readExcel(System.getProperty("user.dir")+"\\src\\test\\resources\\TestData.xlsx",
+        Object[][] testObjArray = ExcelUtils.getData(System.getProperty("user.dir")+"\\src\\test\\resources\\TestData.xlsx",
        		 "Sheet1");
 
         return (testObjArray);

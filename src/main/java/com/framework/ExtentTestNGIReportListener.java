@@ -44,6 +44,7 @@ public class ExtentTestNGIReportListener implements IReporter, Constants {
         
         extent.setSystemInfo("Browser", PropertyReaderUtil.getProperty("browser"));
         extent.setSystemInfo("OS", System.getProperty("os.name"));
+        extent.setSystemInfo("OS", System.getProperty("os.version"));
         extent.setSystemInfo("JAVA Version", System.getProperty("java.version"));
         
         extent.flush();
@@ -77,11 +78,11 @@ public class ExtentTestNGIReportListener implements IReporter, Constants {
                 	test.fail(result.getTestClass().getName()
                             + "." + result.getMethod().getMethodName(),
                     MediaEntityBuilder.createScreenCaptureFromPath(IMAGES_FOLDER + result.getTestClass().getName()
-                            + "." + result.getMethod().getMethodName() + ".png").build());
+                            + "." + result.getMethod().getMethodName() +"_"+System.currentTimeMillis() + ".png").build());
 
                 	test.addScreenCaptureFromPath(IMAGES_FOLDER
                     + result.getTestClass().getName()
-                    + "." + result.getMethod().getMethodName() + ".png");
+                    + "." + result.getMethod().getMethodName() +"_"+System.currentTimeMillis() + ".png");
 
                 }
                 test.getModel().setStartTime(getTime(result.getStartMillis()));
