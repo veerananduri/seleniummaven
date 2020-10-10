@@ -51,8 +51,8 @@ public class ExtentTestNGIReportListener implements IReporter, Constants {
 	
 	private void init() {
         ExtentSparkReporter sparkReporter = new ExtentSparkReporter(OUTPUT_FOLDER + FILE_NAME);
-        sparkReporter.config().setDocumentTitle("Extent Report_Lauriete");
-        sparkReporter.config().setReportName("Extent Report_Lauriete");
+        sparkReporter.config().setDocumentTitle("Extent Report_Laureate");
+        sparkReporter.config().setReportName("Extent Report_Laureate");
         sparkReporter.config().setTimeStampFormat("HH:mm:ss");
         sparkReporter.config().setEncoding("utf-8");
         sparkReporter.config().setProtocol(Protocol.HTTPS);

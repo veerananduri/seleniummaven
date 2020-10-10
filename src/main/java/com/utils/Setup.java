@@ -1,7 +1,9 @@
 package com.utils;
 
 import org.testng.ITestResult;
+import org.testng.Reporter;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 
@@ -26,10 +28,10 @@ import javax.imageio.ImageIO;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import ru.yandex.qatools.ashot.AShot;
 import ru.yandex.qatools.ashot.Screenshot;
@@ -38,11 +40,13 @@ import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
 
 public class Setup implements Constants {
 	
-	protected static RemoteWebDriver driver;
+	protected static WebDriver driver;
 	ExtentReports extentReports = new ExtentReports();
 	static Map<Integer, ExtentTest> extentTestMap = new HashMap<>();
+	public static ThreadLocal<WebDriver> wd = new ThreadLocal<WebDriver>();
+	public static ExtentTest test;
 
-	public RemoteWebDriver callDriver() {
+	static WebDriver callDriver() {
 		String browser = PropertyReaderUtil.getProperty("browser");
 		
 		if(browser.equalsIgnoreCase("Chrome")) {
@@ -86,13 +90,24 @@ public class Setup implements Constants {
 	
 	@BeforeMethod (alwaysRun=true)
 	public void beforeMethod(Method method) {
-		ExtentTest test = extentReports.createTest(method.getName());
+		 test = extentReports.createTest(method.getName());
 		extentTestMap.put((int) (long) (Thread.currentThread().getId()), test);
+		WebDriver driver = callDriver();
+		setWebDriver(driver);
+	}
+	
+	public void setWebDriver(WebDriver driver) {
+		wd.set(driver);
+	}
+
+	public static WebDriver getWebDriver() {
+		return wd.get();
 	}
 	
 	public static synchronized ExtentTest getTest() {
 		return extentTestMap.get((int) (long) Thread.currentThread().getId());
 	}
+	
 
 	@AfterMethod (alwaysRun=true)
 	public void afterMethod(ITestResult itestResult) {
@@ -101,6 +116,8 @@ public class Setup implements Constants {
 			System.out.println("Testcase is Passed");
 		} else if (itestResult.getStatus() == 2) {
 			getTest().log(Status.FAIL, getStackTrace(itestResult.getThrowable()));
+			test.log(Status.INFO, "********************************************<br>Testcase Failed<br>********************************************");
+			Reporter.log("********************************************<br>Testcase Failed<br>********************************************");
 			//takeScreenshot(itestResult);
 			try {
 				saveFullPageScreenshot(IMAGES_FOLDER + itestResult.getTestClass().getName() + "."
@@ -146,12 +163,18 @@ public class Setup implements Constants {
 	
 	public static void saveFullPageScreenshot(String name) throws IOException {
 		Screenshot screenshot = new AShot().shootingStrategy(ShootingStrategies.viewportPasting(1000))
-				.takeScreenshot(driver);
+				.takeScreenshot(getWebDriver());
 		ImageIO.write(screenshot.getImage(), "PNG", new File(name));
 	}
 
 	private <T> T getScreenShotAs(OutputType<T> file) {
-		return ((TakesScreenshot) driver).getScreenshotAs(file);
+		return ((TakesScreenshot) getWebDriver()).getScreenshotAs(file);
 	}
-
+	
+	@AfterSuite(alwaysRun=true)
+	public void afterSuite() {
+		getTest().getExtent().flush();
+		
+	}
+	
 }

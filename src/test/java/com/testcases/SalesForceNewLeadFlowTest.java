@@ -1,8 +1,6 @@
 package com.testcases;
 
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.DataProvider;
-import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import com.pageobjects.SalesForceNewLeadPageObjects;
@@ -10,9 +8,7 @@ import com.utils.Commons;
 import com.utils.ExcelUtils;
 import com.utils.PropertyReaderUtil;
 import com.utils.Setup;
-import com.aventstack.extentreports.testng.listener.ExtentITestListenerClassAdapter;
 
-@Listeners({ ExtentITestListenerClassAdapter.class })
 public class SalesForceNewLeadFlowTest extends Setup {
 	
 	Commons commons;
@@ -20,15 +16,13 @@ public class SalesForceNewLeadFlowTest extends Setup {
 	SalesForceNewLeadPageObjects salesForceNewLeadPageObjects;
 	
 	public void initTest() {
-		RemoteWebDriver driver = callDriver();
-		super.driver = driver;
-		commons = new Commons(driver);
-		salesForceNewLeadPageObjects = new SalesForceNewLeadPageObjects(driver);
+		commons = new Commons(getWebDriver());
+		salesForceNewLeadPageObjects = new SalesForceNewLeadPageObjects(getWebDriver());
 	}	
 	
 	
 	@Test (dataProvider = "StudentData")
-	public void createNewLead(String username, String password, String studentProgram) {
+	public void createNewLead(String username, String password, String studentProgram, String date) {
 		
 		//Initialize the driver
 		initTest();
@@ -40,7 +34,7 @@ public class SalesForceNewLeadFlowTest extends Setup {
 		salesForceNewLeadPageObjects.navigateToClassicView();
 		
 		//Create new lead
-		salesForceNewLeadPageObjects.createNewLead(studentProgram);
+		salesForceNewLeadPageObjects.createNewLead(studentProgram, date);
 	}
 	
 	

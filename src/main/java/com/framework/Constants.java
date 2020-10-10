@@ -1,5 +1,6 @@
 package com.framework;
 
+
 public interface Constants {
 
 	static final String OUTPUT_FOLDER = "./src/test/resources/Reports/";

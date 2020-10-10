@@ -1,24 +1,24 @@
 package com.pageobjects;
 
-import java.util.Set;
-
 import org.openqa.selenium.By;
-import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.WebDriver;
+import org.testng.Assert;
 
+import com.aventstack.extentreports.Status;
 import com.github.javafaker.Faker;
 import com.utils.Commons;
 import com.utils.PropertyReaderUtil;
 
-public class SalesForceNewLeadPageObjects {
+public class SalesForceNewLeadPageObjects extends Commons{
 
-	private RemoteWebDriver remDriver;
-	Commons commons;
-	Faker faker = new Faker();
-
-	public SalesForceNewLeadPageObjects(RemoteWebDriver driver) {
-		this.remDriver = driver;
-		commons = new Commons(remDriver);
+	private WebDriver remDriver; 
+	
+	public SalesForceNewLeadPageObjects(WebDriver webDriver) {
+		super(getWebDriver());
+		this.remDriver = webDriver;
 	}
+	
+	Faker faker = new Faker();
 
 	public By username() {
 		By username = By.id("username");
@@ -137,7 +137,7 @@ public class SalesForceNewLeadPageObjects {
 	}
 
 	public By selectStage() {
-		By stage = By.id("//*[@id='opp11']");
+		By stage = By.id("opp11");
 		return stage;
 	}
 
@@ -210,6 +210,11 @@ public class SalesForceNewLeadPageObjects {
 		By select = By.xpath("//label[text()='IsStudentProgramActive']/../../following-sibling::td/input");
 		return select;
 	}
+	
+	public By showAllResults() {
+		By results = By.xpath("//a[text()='Show all results']");
+		return results;
+	}
 
 	/******************************************************************************************
 	 *********************** Second Level methods starts from here ****************************
@@ -228,81 +233,164 @@ public class SalesForceNewLeadPageObjects {
 		remDriver.get(url);
 
 		// Enter Credentials and Login
-		commons.typeValue(username(), username);
-		commons.typeValue(pwd(), password);
-		commons.clickElement(clickLogin());
-		commons.sleep(3);
-
+		typeValue(username(), username);
+		typeValue(pwd(), password);
+		clickElement(clickLogin());
 	}
 
 	/**
 	 * Navigate to classic view
 	 */
 	public void navigateToClassicView() {
-		commons.clickElement(clickProfile());
-		commons.clickElement(clickSwitch());
-		commons.sleep(2);
+		if(isElementDisplayed(clickProfile())) {
+			clickElement(clickProfile());
+			clickElement(clickSwitch());
+			sleep(2);
+		} 		
 	}
 
 	/**
 	 * Click on All Tabs ('+' Icon) and Select Leads link to create New Lead
 	 */
-	public void createNewLead(String program) {
+	public void createNewLead(String program, String date) {
 
-		String firstName = faker.address().firstName();
-		String lastName = faker.address().lastName();
+		String firstName = faker.address().firstName().replaceAll("[^A-Za-z0-9]","");
+		String lastName = faker.address().lastName().replaceAll("[^A-Za-z0-9]","");
 		String company = faker.company().name();
 		String email = firstName + "_" + lastName + "@gmail.com";
 		String phone = faker.phoneNumber().cellPhone();
 
 		// Click Leads Link
-		commons.clickElement(clickAllTabs());
-		commons.clickElement(leadsLink());
-		commons.sleep(2);
+		clickElement(clickAllTabs());
+		clickElement(leadsLink());
+		sleep(2);
 
 		// Click New Button
-		commons.clickElement(newButton());
+		clickElement(newButton());
 
 		// Enter New Lead data
-		commons.typeValue(firstName(), firstName);
-		commons.typeValue(lastName(), lastName);
-		commons.typeValue(company(), company);
-		commons.typeValue(email(), email);
-		commons.typeValue(enterPhone(), phone);
-
-		// Select Program Interest
-		commons.clickElement(searchPickProgram());
+		typeValue(firstName(), firstName);
+		typeValue(lastName(), lastName);
+		typeValue(company(), company);
+		typeValue(email(), email);
+		typeValue(enterPhone(), phone);
 
 		// Store the current window handle
+		// Select Program Interest
 		String winHandleBefore = remDriver.getWindowHandle();
+		searchPickerSwitch(searchPickProgram(), winHandleBefore);
 		
-		// Switch to new window opened
-		for (String winHandle : remDriver.getWindowHandles()) {
-			if(!winHandle.equals(winHandleBefore)) {
-				remDriver.switchTo().window(winHandle);
-				commons.sleep(1);
-			}			
-		}
+		typeValue(searchInputInFrame(), program);
+		clickElement(clickGo());
 		
-		//Switch to Iframe in new lookup window  and search the text
-		remDriver.switchTo().frame("searchFrame");
-		commons.typeValue(searchInputInFrame(), program);
-		commons.clickElement(clickGo());
-		
-		commons.sleep(2);
+		sleep(2);
 		
 		//Switch to another results iframe and select the result
 		remDriver.switchTo().defaultContent();
 		remDriver.switchTo().frame("resultsFrame");
-		commons.clickElement(selectSearchResult(program));
+		clickElement(selectSearchResult(program));
 		
-		commons.sleep(2);
+		sleep(2);
 		
 		//Switch back to the default window
 		remDriver.switchTo().window(winHandleBefore);
 		
 		//Save the lead
-		commons.clickElement(saveLead());
+		clickElement(saveLead());
+		reportLog("New Lead Saved for the program :" +program);
+		reportLog("Firstname and Lastname Details:" +firstName+" "+lastName);
+		
+		Assert.assertTrue(true, "Testcase Passed");
+		getTest().log(Status.INFO, "New Lead Saved");
+		
+		//Click on Opportunity
+		clickElement(selectOpportunity(company));
+		
+		//Click Edit on Opportunity
+		clickElement(clickEdit());
+		
+		//Select the preferred start date
+		searchPickerSwitch(selectDatePicker(), winHandleBefore);
+		typeValue(searchInputInFrame(), date);
+		clickElement(clickGo());
+		remDriver.switchTo().defaultContent();
+		remDriver.switchTo().frame("resultsFrame");
+		if(isElementDisplayed(showAllResults())) {
+			clickElement(showAllResults());
+		}
+		remDriver.switchTo().defaultContent();
+		remDriver.switchTo().frame("resultsFrame");
+		sleep(2);
+		clickElement(selectStartDate(program));
+		
+		sleep(2);
+		
+		//Switch back to the default window
+		remDriver.switchTo().window(winHandleBefore);
+		clickElement(saveLead());
+		
+		//Click Edit again to select Stage & Admission Status and Save
+		clickElement(clickEdit());		
+		selectByVisibleText(selectStage(), "Admitted");
+		selectByVisibleText(selectAdmissionStatus(), "AD Admitted");		
+		clickElement(saveLead());
+		
+		//click edit again and select Stage as Student and Save
+		clickElement(clickEdit());
+		selectByVisibleText(selectStage(), "Student");
+		clickElement(saveLead());
+		
+		//Retreive the student program #
+		String studentProgNumber = getText(studentProgramNum());
+		reportLog("Student Program Number : " + studentProgNumber);
+		
+		//Click on contact
+		clickElement(selectContact());
+		String bannerId = getText(bannerId());
+		reportLog("Banner Id : " + bannerId + "<br>");
+		
+		//Navigate to Student Program and Copy subscription number 
+		typeValue(searchHeader(), studentProgNumber);
+		clickElement(clickSearch());
+		clickElement(clickStudentProgramNum(studentProgNumber));
+		String subscriptionNum = getText(getStudentSubscription());
+		
+		//Click Edit on Student Program
+		clickElement(clickEdit());
+		searchPickerSwitch(searchClickCurrentStudentSubscript(), winHandleBefore);
+		typeValue(searchInputInFrame(), subscriptionNum);
+		clickElement(clickGoInFrame());
+		
+		remDriver.switchTo().defaultContent();
+		remDriver.switchTo().frame("resultsFrame");
+		clickElement(selectSearchResultOfSubscriptionNum(subscriptionNum));
+		
+		//Switch back to the default window
+		remDriver.switchTo().window(winHandleBefore);
+		clickElement(selectIsStudentProgActive());
+		clickElement(saveLead());
+		
+		reportLog("******************************************************************");
+		reportLog("Testcase Finished.");
+		reportLog("******************************************************************<br>");
+	}
+	
+	
+	
+	public void searchPickerSwitch(By locator, String window) {
+		// Select lookup
+		clickElement(locator);		
+
+		// Switch to new window opened
+		for (String winHandle : remDriver.getWindowHandles()) {
+			if (!winHandle.equals(window)) {
+				remDriver.switchTo().window(winHandle);
+				sleep(1);
+			}
+		}
+
+		// Switch to Iframe in new lookup window and search the text
+		remDriver.switchTo().frame("searchFrame");
 	}
 
 }

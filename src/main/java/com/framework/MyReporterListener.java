@@ -9,7 +9,6 @@ import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -64,8 +63,7 @@ public class MyReporterListener extends MyReportListener {
         m_out.close();
     }
 
-    protected PrintWriter createWriter(String outdir) throws IOException {
-        Date now = new Date();
+    protected PrintWriter createWriter(String outdir) throws IOException {        
         new File(outdir).mkdirs();
         return new PrintWriter(new FileWriter(new File(
                 outdir, "emailable-FON-report"
@@ -592,7 +590,8 @@ public class MyReporterListener extends MyReportListener {
 
     // ~ Inner Classes --------------------------------------------------------
     /** Arranges methods by classname and method name */
-    private class TestSorter implements Comparator<IInvokedMethod> {
+    @SuppressWarnings("unused")
+	private class TestSorter implements Comparator<IInvokedMethod> {
         // ~ Methods
         // -------------------------------------------------------------
 

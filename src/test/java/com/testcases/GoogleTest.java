@@ -17,14 +17,12 @@ public class GoogleTest extends Setup {
 	PropertyReaderUtil propUtil = new PropertyReaderUtil();
 	
 	public void initTest() {
-		RemoteWebDriver driver = callDriver();
-		super.driver = driver;
-		commons = new Commons(driver);
+		commons = new Commons(getWebDriver());
 	}	
 	
 	WordPressLoginPO wordPressLoginPO = new WordPressLoginPO();
 	
-	@Test(priority=4)
+	//@Test(priority=4)
 	public void printTest() {
 		System.out.println("================================================");
 		System.out.println("================printTest()=====================");
@@ -32,7 +30,7 @@ public class GoogleTest extends Setup {
 		System.out.println("This is my first test");
 	}
 	
-	@Test(priority=2)
+	//@Test(priority=2)
 	public void googleSearchTest() {
 		System.out.println("================================================");
 		System.out.println("================googleSearchTest()==============");
@@ -42,14 +40,14 @@ public class GoogleTest extends Setup {
 		initTest();
 		
 		//Open url and get the title
-		driver.get("https://google.com");
-		String title = driver.getTitle();
+		getWebDriver().get("https://google.com");
+		String title = getWebDriver().getTitle();
 		Assert.assertEquals(title, "Google", "Title Validation");
 		Assert.fail("Testing failed test case");
 		
 	}
 	
-	@Test(priority=3, groups = "test")
+	//@Test(priority=3, groups = "test")
 	public void loginTest() {
 		System.out.println("================================================");
 		System.out.println("================loginTest()=====================");
@@ -59,7 +57,7 @@ public class GoogleTest extends Setup {
 		initTest();
 		
 		//Login to the Website
-		driver.get(PropertyReaderUtil.getProperty("url"));
+		getWebDriver().get(PropertyReaderUtil.getProperty("url"));
 		commons.typeValue(wordPressLoginPO.loginField(), "opensourcecms");
 		commons.typeValue(wordPressLoginPO.pwdField(), "test");
 		commons.clickElement(wordPressLoginPO.clickSubmit());
@@ -67,7 +65,7 @@ public class GoogleTest extends Setup {
 		
 	}
 	
-	@Test(priority=1, dataProvider = "Authentication")
+	//@Test(priority=1, dataProvider = "Authentication")
 	public void dataProviderTest(String username, String password) {
 		System.out.println("================================================");
 		System.out.println("================dataProviderTest()==============");
@@ -77,7 +75,7 @@ public class GoogleTest extends Setup {
 		initTest();
 		
 		//Login to the Website
-		driver.get("https://s1.demo.opensourcecms.com/wordpress/wp-login.php");
+		getWebDriver().get("https://s1.demo.opensourcecms.com/wordpress/wp-login.php");
 		commons.typeValue(wordPressLoginPO.loginField(), username);
 		commons.typeValue(wordPressLoginPO.pwdField(), password);
 		commons.clickElement(wordPressLoginPO.clickSubmit());
