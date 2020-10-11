@@ -254,6 +254,7 @@ public class SalesForceNewLeadPageObjects extends Commons{
 	 */
 	public void createNewLead(String program, String date) {
 
+		//Get the input data
 		String firstName = faker.address().firstName().replaceAll("[^A-Za-z0-9]","");
 		String lastName = faker.address().lastName().replaceAll("[^A-Za-z0-9]","");
 		String company = faker.company().name();

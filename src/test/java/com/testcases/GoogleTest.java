@@ -22,7 +22,7 @@ public class GoogleTest extends Setup {
 	
 	WordPressLoginPO wordPressLoginPO = new WordPressLoginPO();
 	
-	//@Test(priority=4)
+	@Test(priority=4)
 	public void printTest() {
 		System.out.println("================================================");
 		System.out.println("================printTest()=====================");
@@ -30,7 +30,7 @@ public class GoogleTest extends Setup {
 		System.out.println("This is my first test");
 	}
 	
-	//@Test(priority=2)
+	@Test(priority=2)
 	public void googleSearchTest() {
 		System.out.println("================================================");
 		System.out.println("================googleSearchTest()==============");
@@ -47,7 +47,7 @@ public class GoogleTest extends Setup {
 		
 	}
 	
-	//@Test(priority=3, groups = "test")
+	@Test(priority=3, groups = "test")
 	public void loginTest() {
 		System.out.println("================================================");
 		System.out.println("================loginTest()=====================");
@@ -59,13 +59,13 @@ public class GoogleTest extends Setup {
 		//Login to the Website
 		getWebDriver().get(PropertyReaderUtil.getProperty("url"));
 		commons.typeValue(wordPressLoginPO.loginField(), "opensourcecms");
-		commons.typeValue(wordPressLoginPO.pwdField(), "test");
+		commons.typeValue(wordPressLoginPO.pwdField(), "opensourcecms");
 		commons.clickElement(wordPressLoginPO.clickSubmit());
 		Assert.fail();
 		
 	}
 	
-	//@Test(priority=1, dataProvider = "Authentication")
+	@Test(priority=1, dataProvider = "Authentication")
 	public void dataProviderTest(String username, String password) {
 		System.out.println("================================================");
 		System.out.println("================dataProviderTest()==============");

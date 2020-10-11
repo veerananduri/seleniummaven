@@ -46,7 +46,7 @@ public class SalesForceNewLeadFlowTest extends Setup {
 	@DataProvider(name = "StudentData")
 	public static Object[][] StudentData() throws Exception{
 		 
-        Object[][] testObjArray = ExcelUtils.getData(System.getProperty("user.dir")+"\\src\\test\\resources\\TestData.xlsx",
+        Object[][] testObjArray = ExcelUtils.getData(TESTRESOURCES+"/TestData.xlsx",
        		 "Sheet1");
 
         return (testObjArray);
