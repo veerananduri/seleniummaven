@@ -11,6 +11,7 @@ import com.utils.Commons;
 import com.utils.ExcelUtils;
 import com.utils.PropertyReaderUtil;
 import com.utils.Setup;
+import com.utils.TestNGGroups;
 
 public class SalesForceNewLeadFlowTest extends Setup {
 	
@@ -24,7 +25,7 @@ public class SalesForceNewLeadFlowTest extends Setup {
 	}	
 	
 	
-	@Test (dataProvider = "StudentData")
+	@Test (groups = TestNGGroups.L2, dataProvider = "StudentData")
 	public void createNewLead(Map<String, String> data) {
 		
 		Reporter.log("Test case with data : " + data.get("StudentProgram") + "<br><br>");
