@@ -9,15 +9,15 @@ import com.github.javafaker.Faker;
 import com.utils.Commons;
 import com.utils.PropertyReaderUtil;
 
-public class SalesForceNewLeadPageObjects extends Commons{
+public class SalesForceNewLeadPageObjects extends Commons {
 
-	private WebDriver remDriver; 
-	
+	private WebDriver remDriver;
+
 	public SalesForceNewLeadPageObjects(WebDriver webDriver) {
 		super(getWebDriver());
 		this.remDriver = webDriver;
 	}
-	
+
 	Faker faker = new Faker();
 
 	public By username() {
@@ -210,7 +210,7 @@ public class SalesForceNewLeadPageObjects extends Commons{
 		By select = By.xpath("//label[text()='IsStudentProgramActive']/../../following-sibling::td/input");
 		return select;
 	}
-	
+
 	public By showAllResults() {
 		By results = By.xpath("//a[text()='Show all results']");
 		return results;
@@ -242,11 +242,11 @@ public class SalesForceNewLeadPageObjects extends Commons{
 	 * Navigate to classic view
 	 */
 	public void navigateToClassicView() {
-		if(isElementDisplayed(clickProfile())) {
+		if (isElementDisplayed(clickProfile())) {
 			clickElement(clickProfile());
 			clickElement(clickSwitch());
 			sleep(2);
-		} 		
+		}
 	}
 
 	/**
@@ -254,9 +254,9 @@ public class SalesForceNewLeadPageObjects extends Commons{
 	 */
 	public void createNewLead(String program, String date) {
 
-		//Get the input data
-		String firstName = "ZZ_"+faker.address().firstName().replaceAll("[^A-Za-z0-9]","");
-		String lastName = "ZZ_"+faker.address().lastName().replaceAll("[^A-Za-z0-9]","");
+		// Get the input data
+		String firstName = "ZZ_" + faker.address().firstName().replaceAll("[^A-Za-z0-9]", "");
+		String lastName = "ZZ_" + faker.address().lastName().replaceAll("[^A-Za-z0-9]", "");
 		String company = faker.company().name();
 		String email = firstName + "_" + lastName + "@gmail.com";
 		String phone = faker.phoneNumber().cellPhone();
@@ -280,108 +280,106 @@ public class SalesForceNewLeadPageObjects extends Commons{
 		// Select Program Interest
 		String winHandleBefore = remDriver.getWindowHandle();
 		searchPickerSwitch(searchPickProgram(), winHandleBefore);
-		
+
 		typeValue(searchInputInFrame(), program);
 		clickElement(clickGo());
-		
+
 		sleep(2);
-		
-		//Switch to another results iframe and select the result
+
+		// Switch to another results iframe and select the result
 		remDriver.switchTo().defaultContent();
 		remDriver.switchTo().frame("resultsFrame");
 		clickElement(selectSearchResult(program));
-		
+
 		sleep(2);
-		
-		//Switch back to the default window
+
+		// Switch back to the default window
 		remDriver.switchTo().window(winHandleBefore);
-		
-		//Save the lead
+
+		// Save the lead
 		clickElement(saveLead());
-		reportLog("New Lead Saved for the program : " +program);
-		reportLog("Firstname and Lastname Details : " +firstName+" "+lastName);
+		reportLog("New Lead Saved for the program : " + program);
+		reportLog("Firstname and Lastname Details : " + firstName + " " + lastName);
 		reportLog("Opportunity : " + company);
-		
+
 		Assert.assertTrue(true, "Testcase Passed");
 		getTest().log(Status.INFO, "New Lead Saved");
-		
-		//Click on Opportunity
+
+		// Click on Opportunity
 		clickElement(selectOpportunity(company));
-		
-		//Click Edit on Opportunity
+
+		// Click Edit on Opportunity
 		clickElement(clickEdit());
-		
-		//Select the preferred start date
+
+		// Select the preferred start date
 		searchPickerSwitch(selectDatePicker(), winHandleBefore);
 		typeValue(searchInputInFrame(), date);
 		clickElement(clickGo());
 		remDriver.switchTo().defaultContent();
 		remDriver.switchTo().frame("resultsFrame");
-		if(isElementDisplayed(showAllResults())) {
+		if (isElementDisplayed(showAllResults())) {
 			clickElement(showAllResults());
 		}
 		remDriver.switchTo().defaultContent();
 		remDriver.switchTo().frame("resultsFrame");
 		sleep(2);
 		clickElement(selectStartDate(program));
-		
+
 		sleep(2);
-		
-		//Switch back to the default window
+
+		// Switch back to the default window
 		remDriver.switchTo().window(winHandleBefore);
 		clickElement(saveLead());
-		
-		//Click Edit again to select Stage & Admission Status and Save
-		clickElement(clickEdit());		
+
+		// Click Edit again to select Stage & Admission Status and Save
+		clickElement(clickEdit());
 		selectByVisibleText(selectStage(), "Admitted");
-		selectByVisibleText(selectAdmissionStatus(), "AD Admitted");		
+		selectByVisibleText(selectAdmissionStatus(), "AD Admitted");
 		clickElement(saveLead());
-		
-		//click edit again and select Stage as Student and Save
+
+		// click edit again and select Stage as Student and Save
 		clickElement(clickEdit());
 		selectByVisibleText(selectStage(), "Student");
 		clickElement(saveLead());
-		
-		//Retrieve the student program #
+
+		// Retrieve the student program #
 		String studentProgNumber = getText(studentProgramNum());
 		reportLog("Student Program Number : " + studentProgNumber);
-		
-		//Click on contact
+
+		// Click on contact
 		clickElement(selectContact());
 		String bannerId = getText(bannerId());
 		reportLog("Banner Id : " + bannerId + "<br>");
-		
-		//Navigate to Student Program and Copy subscription number 
+
+		// Navigate to Student Program and Copy subscription number
 		typeValue(searchHeader(), studentProgNumber);
 		clickElement(clickSearch());
 		clickElement(clickStudentProgramNum(studentProgNumber));
 		String subscriptionNum = getText(getStudentSubscription());
-		
-		//Click Edit on Student Program
+
+		// Click Edit on Student Program
 		clickElement(clickEdit());
 		searchPickerSwitch(searchClickCurrentStudentSubscript(), winHandleBefore);
 		typeValue(searchInputInFrame(), subscriptionNum);
 		clickElement(clickGoInFrame());
-		
+
 		remDriver.switchTo().defaultContent();
 		remDriver.switchTo().frame("resultsFrame");
 		clickElement(selectSearchResultOfSubscriptionNum(subscriptionNum));
-		
-		//Switch back to the default window
+
+		// Switch back to the default window
 		remDriver.switchTo().window(winHandleBefore);
 		clickElement(selectIsStudentProgActive());
 		clickElement(saveLead());
-		
+
 		reportLog("******************************************************************");
 		reportLog("Testcase Finished.");
 		reportLog("******************************************************************<br>");
 	}
-	
-	
-	
+
 	public void searchPickerSwitch(By locator, String window) {
 		// Select lookup
-		clickElement(locator);		
+		clickElement(locator);
 
 		// Switch to new window opened
 		for (String winHandle : remDriver.getWindowHandles()) {

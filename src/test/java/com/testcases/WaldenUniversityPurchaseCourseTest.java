@@ -28,8 +28,17 @@ public class WaldenUniversityPurchaseCourseTest extends Setup {
 		//Initialize the driver
 		initTest();
 		
+		waldenUniversityPurchaseCoursePageObjects.launchWaldenUniversityUrl();
 		
+		waldenUniversityPurchaseCoursePageObjects.searchCourse(data);
 		
+		data = waldenUniversityPurchaseCoursePageObjects.addToCartandCheckout(data);
+		
+		data = waldenUniversityPurchaseCoursePageObjects.oktaSignupForCheckout(data);
+		
+		waldenUniversityPurchaseCoursePageObjects.continueCheckout();
+		
+		waldenUniversityPurchaseCoursePageObjects.clickPaypalPayment(data);
 	}
 	
 	@DataProvider(name = "CourseData")
