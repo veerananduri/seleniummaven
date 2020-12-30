@@ -189,8 +189,8 @@ public class Commons extends Setup {
 		if(count1 > 0) {
 			count2 = count1;
 		} else {
-			count1 = getListSize(locator1);
-			count2 = getListSize(locator2);
+			count1 = driver.findElements(locator1).size();
+			count2 = driver.findElements(locator2).size();
 		}
 		List<String> keyData = new ArrayList<>();
 		List<String> valuesData = new ArrayList<>();
@@ -206,7 +206,7 @@ public class Commons extends Setup {
 			}
 		}
 		
-		for(int i=0; i<count1; i++) {
+		for(int i=0; i<count2; i++) {
 			List<WebElement> info = driver.findElements(locator2);
 			try {
 				valuesData.add(info.get(i).getText());
@@ -223,5 +223,13 @@ public class Commons extends Setup {
 						(m, i) -> m.put(keyData.get(i), valuesData.get(i)),
 						Map::putAll
 				);
+	}
+	
+	public List<WebElement> getListValues(By element) {
+		if(isElementDisplayed(element)) {
+			return driver.findElements(element);
+		} else {
+			return null;
+		}		
 	}
 }

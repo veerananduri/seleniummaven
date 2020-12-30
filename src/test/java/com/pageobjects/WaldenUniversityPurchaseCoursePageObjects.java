@@ -182,15 +182,15 @@ public class WaldenUniversityPurchaseCoursePageObjects extends Commons {
 	}
 	
 	private By selectOpportunityDetailsTab() {
-		return By.cssSelector("a#detailTab__item[aria-selected='true']");
+		return By.xpath("//a[@id='detailTab__item']");
 	}
 	
 	private By opportunityLabels() {
-		return By.cssSelector("div.slds-form span.test-id__field-label");
+		return By.xpath("//div[@class='slds-form']//span[@class='test-id__field-label']");
 	}
 	
 	private By opportunityValues() {
-		return By.cssSelector("div.slds-form span.test-id__field-value");
+		return By.xpath("//span[starts-with(@class,'test-id__field-value')]/slot/slot");
 	}
 	
 	//Login locators (test.salesforce.com)
@@ -288,7 +288,7 @@ public class WaldenUniversityPurchaseCoursePageObjects extends Commons {
 		String state = faker.address().state();
 		String city = faker.address().city();
 		String zipCode = faker.address().zipCode();
-		String phoneNumber = faker.phoneNumber().cellPhone().replaceAll("[^\\.A-Za-z0-9_]", "").replaceAll(".","");
+		String phoneNumber = faker.phoneNumber().cellPhone().replaceAll("[^\\.A-Za-z0-9_]", "");
 		// String fullAddress = faker.address().fullAddress();
 
 		typeValue(checkoutDob(), "07011990");
@@ -359,17 +359,41 @@ public class WaldenUniversityPurchaseCoursePageObjects extends Commons {
 		clickElement(clickOpportunityLink(data.get("firstname")+" "+data.get("lastname")));
 		
 		sleep(2);
-		clickElement(selectOpportunityDetailsTab());
+		List<WebElement> opptabs = driver.findElements(selectOpportunityDetailsTab());
+		opptabs.get(1).click();
 		
 		sleep(2);
-		validateTableDataandReturnAsKeyValuePair(opportunityLabels(), opportunityValues(), 0);
+		Map<String, String> opportunityData = validateTableDataandReturnAsKeyValuePair(opportunityLabels(), opportunityValues(), 0);
+		reportLog("Opportunity Data : {}"+ opportunityData);
+		
+		if(opportunityData.get("Stage").equals("Application Started") && opportunityData.get("Learner Program").isEmpty()) {
+			reportLog("Validated the salesforce application before completed the purchase : "+opportunityData.get("Stage"));
+		} else {
+			reportLog("Unable to validate the salesforce application before completed the purchase : "+opportunityData.get("Stage"));
+		}
 		
 		//Switch to the main tab
 		remDriver.switchTo().window(tabs.get(0));
 		
 		List<WebElement> buttons = remDriver.findElements(reviewAndPurchase());
 		buttons.get(1).click();
+		sleep(8);
 		
+		//Switch to the other tab again
+		remDriver.switchTo().window(tabs.get(1));
+		remDriver.navigate().refresh();
+		
+		sleep(3);
+		clickElement(selectOpportunityDetailsTab());		
+		
+		opportunityData = validateTableDataandReturnAsKeyValuePair(opportunityLabels(), opportunityValues(), 0);
+		reportLog("Opportunity Data : {}"+ opportunityData);
+		
+		if(opportunityData.get("Stage").equals("Learner") && opportunityData.get("Learner Program").contains("LP-")) {
+			reportLog("Validated the salesforce application after completed the purchase : "+opportunityData.get("Stage"));
+		} else {
+			reportLog("Unable to validate the salesforce application after completed the purchase : "+opportunityData.get("Stage"));
+		}
 	}
 	
 
