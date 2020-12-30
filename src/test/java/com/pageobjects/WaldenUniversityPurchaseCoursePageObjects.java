@@ -227,7 +227,7 @@ public class WaldenUniversityPurchaseCoursePageObjects extends Commons {
 		clickElement(searchButton());
 
 		if (isElementAvailable(selectCourseLink(course))) {
-			clickElement(selectCourseLink(course));
+			jseClickElement(selectCourseLink(course));
 			reportLog("Selected the course in search results page: " + course);
 		} else {
 			reportLog("Course not displayed in search results: " + course);
@@ -293,7 +293,7 @@ public class WaldenUniversityPurchaseCoursePageObjects extends Commons {
 
 		typeValue(checkoutDob(), "07011990");
 		typeValue(checkoutStreetAddress(), address);
-		selectByVisibleText(checkoutState(), state);
+		selectByVisibleText(checkoutState(), "Maryland");
 		typeValue(checkoutCity(), city);
 		typeValue(checkoutZipCode(), zipCode);
 		typeValue(checkoutPhone(), phoneNumber);
