@@ -25,8 +25,8 @@ public class SalesForceNewLeadFlowTest extends Setup {
 	}	
 	
 	
-	@Test (groups = TestNGGroups.L2, dataProvider = "StudentData")
-	public void createNewLead(Map<String, String> data) {
+	@Test (groups = TestNGGroups.L2, dataProvider = "StudentDataL2")
+	public void createNewLeadL2(Map<String, String> data) {
 		
 		Reporter.log("Test case with data : " + data.get("StudentProgram") + "<br><br>");
 		
@@ -43,12 +43,38 @@ public class SalesForceNewLeadFlowTest extends Setup {
 		salesForceNewLeadPageObjects.createNewLead(data.get("StudentProgram"), data.get("StartDate"));
 	}
 	
+	@Test (groups = TestNGGroups.L1, dataProvider = "StudentDataL1")
+	public void createNewLeadL1(Map<String, String> data) {
+		
+		Reporter.log("Test case with data : " + data.get("StudentProgram") + "<br><br>");
+		
+		//Initialize the driver
+		initTest();
+		
+		//Login
+		salesForceNewLeadPageObjects.loginToSalesforce(data.get("Login"), data.get("Password"));
+		
+		//Navigate to classic view
+		salesForceNewLeadPageObjects.navigateToClassicView();
+		
+		//Create new lead
+		salesForceNewLeadPageObjects.createNewLeadL1(data.get("StudentProgram"));
+	}
 	
-	@DataProvider(name = "StudentData")
-	public static Object[][] StudentData() throws Exception{
+	@DataProvider(name = "StudentDataL2")
+	public static Object[][] StudentDataL2() throws Exception{
 		 
         Object[][] testObjArray = ExcelUtils.getData(TESTRESOURCES+"/TestData.xlsx",
        		 "Sheet1");
+
+        return (testObjArray);
+	 }
+	
+	@DataProvider(name = "StudentDataL1")
+	public static Object[][] StudentDataL1() throws Exception{
+		 
+        Object[][] testObjArray = ExcelUtils.getData(TESTRESOURCES+"/TestData.xlsx",
+       		 "Sheet3");
 
         return (testObjArray);
 	 }

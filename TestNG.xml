@@ -8,13 +8,19 @@
 	</listeners>
 
 	<test thread-count="5" name="Sample Tests" verbose="0">
-		<!-- <groups>
+		<groups>
 			<run>
 				<include name="test"></include>
+				<include name="l1"></include>
+				<include name="l2"></include>
+				<include name="l3"></include>
+				<include name="smoke"></include>
+				<include name="regression"></include>
 			</run>
-		</groups> -->
+		</groups>
 		<classes>
 			<class name="com.testcases.SalesForceNewLeadFlowTest" />
+			<class name="com.testcases.WaldenUniversityPurchaseCourseTest" />
 		</classes>
 	</test> <!-- Command line test -->
 </suite> <!-- com.testcases.GoogleTest -->

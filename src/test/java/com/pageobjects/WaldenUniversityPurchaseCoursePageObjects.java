@@ -289,6 +289,10 @@ public class WaldenUniversityPurchaseCoursePageObjects extends Commons {
 		String city = faker.address().city();
 		String zipCode = faker.address().zipCode();
 		String phoneNumber = faker.phoneNumber().cellPhone().replaceAll("[^\\.A-Za-z0-9_]", "");
+		if(phoneNumber.contains(".")) {
+			System.out.println("PhoneNumber : "+phoneNumber);
+			phoneNumber = phoneNumber.replaceAll(".", "");
+		}
 		// String fullAddress = faker.address().fullAddress();
 
 		typeValue(checkoutDob(), "07011990");
@@ -364,7 +368,7 @@ public class WaldenUniversityPurchaseCoursePageObjects extends Commons {
 		
 		sleep(2);
 		Map<String, String> opportunityData = validateTableDataandReturnAsKeyValuePair(opportunityLabels(), opportunityValues(), 0);
-		reportLog("Opportunity Data : {}"+ opportunityData);
+		reportLog("Opportunity Data : "+ opportunityData);
 		
 		if(opportunityData.get("Stage").equals("Application Started") && opportunityData.get("Learner Program").isEmpty()) {
 			reportLog("Validated the salesforce application before completed the purchase : "+opportunityData.get("Stage"));
@@ -387,7 +391,7 @@ public class WaldenUniversityPurchaseCoursePageObjects extends Commons {
 		clickElement(selectOpportunityDetailsTab());		
 		
 		opportunityData = validateTableDataandReturnAsKeyValuePair(opportunityLabels(), opportunityValues(), 0);
-		reportLog("Opportunity Data : {}"+ opportunityData);
+		reportLog("Opportunity Data : "+ opportunityData);
 		
 		if(opportunityData.get("Stage").equals("Learner") && opportunityData.get("Learner Program").contains("LP-")) {
 			reportLog("Validated the salesforce application after completed the purchase : "+opportunityData.get("Stage"));

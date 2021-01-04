@@ -1,5 +1,8 @@
 package com.pageobjects;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
@@ -12,10 +15,12 @@ import com.utils.PropertyReaderUtil;
 public class SalesForceNewLeadPageObjects extends Commons {
 
 	private WebDriver remDriver;
+	String env = null;
 
 	public SalesForceNewLeadPageObjects(WebDriver webDriver) {
 		super(getWebDriver());
 		this.remDriver = webDriver;
+		env = PropertyReaderUtil.getProperty("environment");
 	}
 
 	Faker faker = new Faker();
@@ -216,6 +221,25 @@ public class SalesForceNewLeadPageObjects extends Commons {
 		return results;
 	}
 
+	/***************************
+	 * L1 Page objects
+	 **************************/
+	private By sqlCheckbox() {
+		return By.xpath("//label[text()='SQL']/../following-sibling::td/input");
+	}
+
+	private By searchEnhancedFields(String field) {
+		return By.xpath("//label[text()='" + field + "']/../following-sibling::td[1]//a");
+	}
+
+	private By enterDataFields(String data) {
+		return By.xpath("//label[text()='" + data + "']/../following-sibling::td[1]/input");
+	}
+
+	private By selectWaldenInstitution() {
+		return By.xpath("//th/a");
+	}
+
 	/******************************************************************************************
 	 *********************** Second Level methods starts from here ****************************
 	 *****************************************************************************************/
@@ -255,11 +279,7 @@ public class SalesForceNewLeadPageObjects extends Commons {
 	public void createNewLead(String program, String date) {
 
 		// Get the input data
-		String firstName = "ZZ_" + faker.address().firstName().replaceAll("[^A-Za-z0-9]", "");
-		String lastName = "ZZ_" + faker.address().lastName().replaceAll("[^A-Za-z0-9]", "");
-		String company = faker.company().name();
-		String email = firstName + "_" + lastName + "@gmail.com";
-		String phone = faker.phoneNumber().cellPhone();
+		Map<String, String> data = getStudentData();
 
 		// Click Leads Link
 		clickElement(clickAllTabs());
@@ -270,11 +290,11 @@ public class SalesForceNewLeadPageObjects extends Commons {
 		clickElement(newButton());
 
 		// Enter New Lead data
-		typeValue(firstName(), firstName);
-		typeValue(lastName(), lastName);
-		typeValue(company(), company);
-		typeValue(email(), email);
-		typeValue(enterPhone(), phone);
+		typeValue(firstName(), data.get("firstName"));
+		typeValue(lastName(), data.get("lastName"));
+		typeValue(company(), data.get("company"));
+		typeValue(email(), data.get("email"));
+		typeValue(enterPhone(), data.get("phone"));
 
 		// Store the current window handle
 		// Select Program Interest
@@ -299,14 +319,14 @@ public class SalesForceNewLeadPageObjects extends Commons {
 		// Save the lead
 		clickElement(saveLead());
 		reportLog("New Lead Saved for the program : " + program);
-		reportLog("Firstname and Lastname Details : " + firstName + " " + lastName);
-		reportLog("Opportunity : " + company);
+		reportLog("Firstname and Lastname Details : " + data.get("firstName") + " " + data.get("lastName"));
+		reportLog("Opportunity : " + data.get("company"));
 
 		Assert.assertTrue(true, "Testcase Passed");
 		getTest().log(Status.INFO, "New Lead Saved");
 
 		// Click on Opportunity
-		clickElement(selectOpportunity(company));
+		clickElement(selectOpportunity(data.get("company")));
 
 		// Click Edit on Opportunity
 		clickElement(clickEdit());
@@ -375,6 +395,111 @@ public class SalesForceNewLeadPageObjects extends Commons {
 		reportLog("******************************************************************");
 		reportLog("Testcase Finished.");
 		reportLog("******************************************************************<br>");
+	}
+
+	public void createNewLeadL1(String program) {
+		// Get the input data
+		Map<String, String> data = getStudentData();
+
+		// Click Leads Link
+		clickElement(clickAllTabs());
+		clickElement(leadsLink());
+		sleep(2);
+
+		// Click New Button
+		clickElement(newButton());
+
+		clickElement(sqlCheckbox());
+
+		// Store the current window handle
+		// Select Walden Institution
+		String winHandleBefore = remDriver.getWindowHandle();
+		searchPickerSwitch(searchEnhancedFields("Institution"), winHandleBefore);
+
+		// Switch to the results frame
+		remDriver.switchTo().defaultContent();
+		remDriver.switchTo().frame("resultsFrame");
+		clickElement(selectWaldenInstitution());
+
+		// Switch back to the default window
+		remDriver.switchTo().window(winHandleBefore);
+
+		searchPickerSwitch(searchEnhancedFields("Campaign"), winHandleBefore);
+
+		// Switch to the results frame
+		remDriver.switchTo().defaultContent();
+		remDriver.switchTo().frame("resultsFrame");
+		clickElement(selectWaldenInstitution());
+
+		// Switch back to the default window
+		remDriver.switchTo().window(winHandleBefore);
+		
+		searchPickerSwitch(searchEnhancedFields("Lead Supplier"), winHandleBefore);
+
+		// Switch to the results frame
+		remDriver.switchTo().defaultContent();
+		remDriver.switchTo().frame("resultsFrame");
+		clickElement(selectWaldenInstitution());
+
+		// Switch back to the default window
+		remDriver.switchTo().window(winHandleBefore);
+		
+		searchPickerSwitch(searchEnhancedFields("Primary Product"), winHandleBefore);
+
+		typeValue(searchInputInFrame(), program);
+		clickElement(clickGo());
+
+		sleep(2);
+
+		// Switch to another results iframe and select the result
+		remDriver.switchTo().defaultContent();
+		remDriver.switchTo().frame("resultsFrame");
+		clickElement(selectSearchResult(program));
+
+		// Switch back to the default window
+		remDriver.switchTo().window(winHandleBefore);
+
+		// Enter required Data fields
+		typeValue(enterDataFields("Email Address (*)"), data.get("email"));
+		typeValue(enterDataFields("Primary Phone Number"), data.get("phone"));
+		typeValue(enterDataFields("First Name (*)"), data.get("firstName"));
+		typeValue(enterDataFields("Last Name (*)"), data.get("lastName"));
+		typeValue(enterDataFields("Address Line 1"), data.get("street1"));
+		typeValue(enterDataFields("City (*)"), data.get("city"));
+		typeValue(enterDataFields("State (*)"), data.get("state"));
+		typeValue(enterDataFields("Zip/Postal Code (*)"), data.get("zipcode"));
+		typeValue(enterDataFields("Country (*)"), "United States");
+
+		clickElement(saveLead());
+
+		// Click Edit again to select Stage & Admission Status and Save
+		clickElement(clickEdit());
+	}
+
+	private Map<String, String> getStudentData() {
+		// Get the input data
+		String firstName = "ZZ_" + faker.address().firstName().replaceAll("[^A-Za-z0-9]", "");
+		String lastName = "ZZ_" + faker.address().lastName().replaceAll("[^A-Za-z0-9]", "");
+		String company = faker.company().name();
+		String email = firstName + "_" + lastName + "@gmail.com";
+		String phone = faker.phoneNumber().cellPhone();
+		String street1 = faker.address().streetAddress();
+		String city = faker.address().cityName();
+		String state = faker.address().state();
+		String zipcode = faker.address().zipCode();
+
+		Map<String, String> data = new HashMap<>();
+		data.put("firstName", firstName);
+		data.put("lastName", lastName);
+		data.put("company", company);
+		data.put("email", email);
+		data.put("phone", phone);
+		data.put("street1", street1);
+		data.put("city", city);
+		data.put("state", state);
+		data.put("zipcode", zipcode);
+
+		return data;
 	}
 
 	public void searchPickerSwitch(By locator, String window) {
