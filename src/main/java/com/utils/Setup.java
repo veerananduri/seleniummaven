@@ -14,6 +14,8 @@ import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.service.ExtentTestManager;
 import com.framework.Constants;
 
+import edu.emory.mathcs.backport.java.util.Collections;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -57,8 +59,14 @@ public class Setup implements Constants {
 			 */
 			WebDriverManager.chromedriver().setup();
 			ChromeOptions options = new ChromeOptions();
-			options.addArguments("--disable-infobars");
-			driver = new ChromeDriver();
+			options.setExperimentalOption("useAutomationExtension", false);
+			options.setExperimentalOption("excludeSwitches", Collections.singletonList("enable-automation"));
+			Map<String, Object> prefs = new HashMap<String, Object>();
+			prefs.put("credentials_enable_service", false);
+			prefs.put("profile.password_manager_enabled", false);
+			options.setExperimentalOption("prefs", prefs);
+			
+			driver = new ChromeDriver(options);
 			driver.manage().window().maximize();
 			driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 		} else if (browser.equalsIgnoreCase("Firefox")) {

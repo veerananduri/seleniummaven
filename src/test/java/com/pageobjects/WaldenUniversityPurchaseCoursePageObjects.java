@@ -193,6 +193,10 @@ public class WaldenUniversityPurchaseCoursePageObjects extends Commons {
 		return By.xpath("//span[starts-with(@class,'test-id__field-value')]/slot/slot");
 	}
 	
+	private By paypalIframe() {
+		return By.cssSelector("iframe[title=PayPal]");
+	}
+	
 	//Login locators (test.salesforce.com)
 	private By username() {
 		By username = By.id("username");
@@ -237,12 +241,13 @@ public class WaldenUniversityPurchaseCoursePageObjects extends Commons {
 	public Map<String, String> addToCartandCheckout(Map<String, String> data) {
 		String priceInCart = getText(courseFeeInCounsellingPage());
 		clickElement(addToCartButton());
+		sleep(2);
 		clickElement(clickCart());
 		String courseName = getText(courseNameInCartPage());
 		if (courseName.contains(data.get("course"))) {
-			reportLog("Course name displayed correctly in cart page");
+			reportLog("Course name displayed correctly in cart page <br>");
 		} else {
-			reportLog("Improper Course name displayed in cart page");
+			reportLog("Improper Course name displayed in cart page <br>");
 		}
 
 		String feeInCheckout = getText(courseFee());
@@ -254,6 +259,7 @@ public class WaldenUniversityPurchaseCoursePageObjects extends Commons {
 		}
 		
 		clickElement(checkoutButton());
+		sleep(2);
 		return data;
 	}
 
@@ -308,7 +314,7 @@ public class WaldenUniversityPurchaseCoursePageObjects extends Commons {
 	public void clickPaypalPayment(Map<String, String> data) {
 		sleep(3);
 		
-		remDriver.switchTo().frame(remDriver.findElement(By.cssSelector("iframe[title=PayPal]")));
+		switchToIframe(paypalIframe());
 		actionClickElement(clickPaypal());
 		String winHandleBefore = remDriver.getWindowHandle();
 		
@@ -331,9 +337,9 @@ public class WaldenUniversityPurchaseCoursePageObjects extends Commons {
 		String actualPrice = data.get("Price");
 		
 		if (actualPrice.equals(headerTotal))
-			reportLog("Couse fee displayed in checkout page and in Paypal webpage are same: "+headerTotal);
+			reportLog("Couse fee displayed in checkout page and in Paypal webpage are same: "+headerTotal+"<br>");
 		else
-			reportLog("Couse fee displayed in checkout page and in Paypal webpage are not same: "+headerTotal);
+			reportLog("Couse fee displayed in checkout page and in Paypal webpage are not same: "+headerTotal+"<br>");
 		
 		jseClickElement(paypalSubmitPayment());
 		sleep(5);
@@ -367,19 +373,22 @@ public class WaldenUniversityPurchaseCoursePageObjects extends Commons {
 		
 		sleep(2);
 		Map<String, String> opportunityData = validateTableDataandReturnAsKeyValuePair(opportunityLabels(), opportunityValues(), 0);
-		reportLog("Opportunity Data : "+ opportunityData);
+		reportLog("Opportunity Data before purchase the course: "+ opportunityData + "<br>");
 		
 		if(opportunityData.get("Stage").equals("Application Started") && opportunityData.get("Learner Program").isEmpty()) {
-			reportLog("Validated the salesforce application before completed the purchase : "+opportunityData.get("Stage"));
+			reportLog("Validated the salesforce application before completed the purchase : "+opportunityData.get("Stage")+"<br>");
 		} else {
-			reportLog("Unable to validate the salesforce application before completed the purchase : "+opportunityData.get("Stage"));
+			reportLog("Unable to validate the salesforce application before completed the purchase : "+opportunityData.get("Stage")+"<br>");
 		}
 		
 		//Switch to the main tab
 		remDriver.switchTo().window(tabs.get(0));
 		
 		List<WebElement> buttons = remDriver.findElements(reviewAndPurchase());
-		buttons.get(1).click();
+		JavascriptExecutor jse = (JavascriptExecutor) driver;		
+		WebElement element = buttons.get(1);
+		jse.executeScript("arguments[0].scrollIntoView(true);", element);
+		element.click();
 		sleep(8);
 		
 		//Switch to the other tab again
@@ -390,13 +399,17 @@ public class WaldenUniversityPurchaseCoursePageObjects extends Commons {
 		clickElement(selectOpportunityDetailsTab());		
 		
 		opportunityData = validateTableDataandReturnAsKeyValuePair(opportunityLabels(), opportunityValues(), 0);
-		reportLog("Opportunity Data : "+ opportunityData);
+		reportLog("Opportunity Data after purchase the course : "+ opportunityData+"<br>");
 		
 		if(opportunityData.get("Stage").equals("Learner") && opportunityData.get("Learner Program").contains("LP-")) {
-			reportLog("Validated the salesforce application after completed the purchase : "+opportunityData.get("Stage"));
+			reportLog("Validated the salesforce application after completed the purchase : "+opportunityData.get("Stage")+ "<br>");
 		} else {
 			reportLog("Unable to validate the salesforce application after completed the purchase : "+opportunityData.get("Stage"));
 		}
+		
+		reportLog("******************************************************************");
+		reportLog("Testcase Finished.");
+		reportLog("******************************************************************<br>");
 	}
 	
 
@@ -406,7 +419,7 @@ public class WaldenUniversityPurchaseCoursePageObjects extends Commons {
 	public void loginToSalesforce() {
 		// Launch URL
 		String url = PropertyReaderUtil.getProperty("url");
-		driver.get(url);
+		remDriver.get(url);
 
 		// Enter Credentials and Login
 		typeValue(username(), "suryakumar.reddi@laureate.net.ml.l3qa");

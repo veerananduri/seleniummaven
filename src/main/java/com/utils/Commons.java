@@ -45,6 +45,11 @@ public class Commons extends Setup {
 		wait.until(ExpectedConditions.elementToBeClickable(locator));
 		driver.findElement(locator).click();
 	}
+	
+	public WebElement webDriverWait(By locator) {
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		return wait.until(ExpectedConditions.elementToBeClickable(locator));
+	}
 
 	public boolean isElementDisplayed(By locator) {
 		boolean flag = false;
@@ -107,27 +112,21 @@ public class Commons extends Setup {
 
 	// Select by value
 	public void selectByValue(By locator, String value) {
-		WebDriverWait wait = new WebDriverWait(driver, 10);
-		wait.until(ExpectedConditions.elementToBeClickable(locator));
-		WebElement element = driver.findElement(locator);
+		WebElement element = webDriverWait(locator);
 		Select select = new Select(element);
 		select.selectByValue(value);
 	}
 
 	// Select by index
 	public void selectByIndex(By locator, int index) {
-		WebDriverWait wait = new WebDriverWait(driver, 10);
-		wait.until(ExpectedConditions.elementToBeClickable(locator));
-		WebElement element = driver.findElement(locator);
+		WebElement element = webDriverWait(locator);
 		Select select = new Select(element);
 		select.selectByIndex(index);
 	}
 
 	// Get Text
 	public String getText(By locator) {
-		WebDriverWait wait = new WebDriverWait(driver, 10);
-		wait.until(ExpectedConditions.elementToBeClickable(locator));
-		WebElement element = driver.findElement(locator);
+		WebElement element = webDriverWait(locator);
 		return element.getText();
 	}
 	
@@ -168,6 +167,10 @@ public class Commons extends Setup {
 		} catch (Exception e) {
 			return 0;
 		}
+	}
+	
+	public void switchToIframe(By locator) {
+		driver.switchTo().frame(driver.findElement(locator));
 	}
 	
 	/**
