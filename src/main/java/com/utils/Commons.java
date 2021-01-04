@@ -142,9 +142,12 @@ public class Commons extends Setup {
 	}
 	
 	public void actionClickElement(By locator) {
-		Actions actions = new Actions(driver);
-		WebElement element = driver.findElement(locator);
 		sleep(1);
+		Actions actions = new Actions(driver);
+		JavascriptExecutor jse = (JavascriptExecutor) driver;
+		WebElement element = driver.findElement(locator);
+		jse.executeScript("arguments[0].scrollIntoView(true);", element);
+		sleep(3);
 		actions.moveToElement(element).click().perform();
 		sleep(1);
 	}

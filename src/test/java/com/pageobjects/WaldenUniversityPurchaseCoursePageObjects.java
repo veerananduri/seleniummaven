@@ -285,7 +285,6 @@ public class WaldenUniversityPurchaseCoursePageObjects extends Commons {
 	public void continueCheckout() {
 
 		String address = faker.address().streetAddress();
-		String state = faker.address().state();
 		String city = faker.address().city();
 		String zipCode = faker.address().zipCode();
 		String phoneNumber = faker.phoneNumber().cellPhone().replaceAll("[^\\.A-Za-z0-9_]", "");
