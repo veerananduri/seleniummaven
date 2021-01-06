@@ -232,9 +232,9 @@ public class WaldenUniversityPurchaseCoursePageObjects extends Commons {
 
 		if (isElementAvailable(selectCourseLink(course))) {
 			jseClickElement(selectCourseLink(course));
-			reportLog("Selected the course in search results page: " + course);
+			reportLog("Selected the course in search results page: " + course +  "<br>");
 		} else {
-			reportLog("Course not displayed in search results: " + course);
+			reportLog("Course not displayed in search results: " + course +  "<br>");
 		}
 	}
 
@@ -252,10 +252,10 @@ public class WaldenUniversityPurchaseCoursePageObjects extends Commons {
 
 		String feeInCheckout = getText(courseFee());
 		if (priceInCart.equals(feeInCheckout)) {
-			reportLog("Couse fee displayed in cart and checkout page are same");
+			reportLog("Couse fee displayed in cart and checkout page are same <br>");
 			data.put("Price", feeInCheckout);
 		} else {
-			reportLog("Mismatch in Couse fee displayed in cart and checkout page");
+			reportLog("Mismatch in Couse fee displayed in cart and checkout page <br>");
 		}
 		
 		clickElement(checkoutButton());
@@ -296,7 +296,7 @@ public class WaldenUniversityPurchaseCoursePageObjects extends Commons {
 		String phoneNumber = faker.phoneNumber().cellPhone().replaceAll("[^\\.A-Za-z0-9_]", "");
 		if(phoneNumber.contains(".")) {
 			System.out.println("PhoneNumber : "+phoneNumber);
-			phoneNumber = phoneNumber.replaceAll(".", "");
+			phoneNumber = faker.phoneNumber().cellPhone().replaceAll("[^\\.A-Za-z0-9_]", "");
 		}
 		// String fullAddress = faker.address().fullAddress();
 

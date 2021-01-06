@@ -1,10 +1,14 @@
 package com.pageobjects;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 
 import com.aventstack.extentreports.Status;
@@ -146,9 +150,8 @@ public class SalesForceNewLeadPageObjects extends Commons {
 		return stage;
 	}
 
-	public By selectAdmissionStatus() {
-		By status = By.xpath("//label[text()='Admissions Status']/../following-sibling::td//select");
-		return status;
+	public By selectAdmissionStatus(String status) {
+		return By.xpath("//label[text()='" + status + "']/../following-sibling::td//select");
 	}
 
 	public By selectContact() {
@@ -164,7 +167,7 @@ public class SalesForceNewLeadPageObjects extends Commons {
 
 	// Contact view page
 	public By bannerId() {
-		By banner = By.xpath("//td[text()='Banner Id']/following-sibling::td/div");
+		By banner = By.xpath("//td[text()='Banner Id']/following-sibling::td[1]/div");
 		return banner;
 	}
 
@@ -238,6 +241,61 @@ public class SalesForceNewLeadPageObjects extends Commons {
 
 	private By selectWaldenInstitution() {
 		return By.xpath("//th/a");
+	}
+
+	private By programSelection() {
+		return By.xpath("//table//tr[2]/th/a");
+	}
+
+	private By opportunityDetail(String detail) {
+		return By.xpath("//td[text()='" + detail + "']/following-sibling::td/div");
+	}
+
+	private By selectSearchPicker(String pick) {
+		return By.xpath("//label[text()='" + pick + "']/../../following-sibling::td[1]//a");
+	}
+
+	private By selectOption(String data) {
+		return By.xpath("//label[text()='" + data + "']/../../following-sibling::td/input");
+	}
+
+	private By selectCaseNumber(String details) {
+		return By.xpath("//th[text()='" + details + "']/../following-sibling::tr/th/a");
+	}
+
+	private By clickOnDetails() {
+		return By.xpath("//span[text()='Details']");
+	}
+
+	private By editCaseDetailsSelection(String details) {
+		return By.xpath("//label[text()='" + details + "']/../../following-sibling::td//select");
+	}
+
+	private By caseEditCheckbox(String details) {
+		return By.xpath("//label[text()='" + details + "']/../following-sibling::td/input[@type='checkbox']");
+	}
+
+	private By closeCase() {
+		return By.name("close");
+	}
+
+	private By caseDetails(String status) {
+		return By.xpath("//td[text()='" + status + "']/following-sibling::td[1]/div");
+	}
+
+	private By clickLink(String detail) {
+		return By.xpath("//td[text()='" + detail + "']/following-sibling::td[1]//a");
+	}
+
+	/**********************************
+	 * UAT Properties
+	 ***********************************/
+	private By opportunityLink() {
+		return By.xpath("//a[text()='Opportunity Name']/../../following-sibling::tr/th/a");
+	}
+
+	private By applicationLink() {
+		return By.xpath("//span[text()='Application']/../following-sibling::td//a");
 	}
 
 	/******************************************************************************************
@@ -354,7 +412,7 @@ public class SalesForceNewLeadPageObjects extends Commons {
 		// Click Edit again to select Stage & Admission Status and Save
 		clickElement(clickEdit());
 		selectByVisibleText(selectStage(), "Admitted");
-		selectByVisibleText(selectAdmissionStatus(), "AD Admitted");
+		selectByVisibleText(selectAdmissionStatus("Admissions Status"), "AD Admitted");
 		clickElement(saveLead());
 
 		// click edit again and select Stage as Student and Save
@@ -397,9 +455,9 @@ public class SalesForceNewLeadPageObjects extends Commons {
 		reportLog("******************************************************************<br>");
 	}
 
-	public void createNewLeadL1(String program) {
+	public void createNewLeadL1(Map<String, String> data) {
 		// Get the input data
-		Map<String, String> data = getStudentData();
+		Map<String, String> data1 = getStudentData();
 
 		// Click Leads Link
 		clickElement(clickAllTabs());
@@ -408,6 +466,11 @@ public class SalesForceNewLeadPageObjects extends Commons {
 
 		// Click New Button
 		clickElement(newButton());
+
+		// Enter New Lead data
+		typeValue(firstName(), data1.get("firstName"));
+		typeValue(lastName(), data1.get("lastName"));
+		typeValue(company(), data1.get("company"));
 
 		clickElement(sqlCheckbox());
 
@@ -433,7 +496,7 @@ public class SalesForceNewLeadPageObjects extends Commons {
 
 		// Switch back to the default window
 		remDriver.switchTo().window(winHandleBefore);
-		
+
 		searchPickerSwitch(searchEnhancedFields("Lead Supplier"), winHandleBefore);
 
 		// Switch to the results frame
@@ -443,10 +506,10 @@ public class SalesForceNewLeadPageObjects extends Commons {
 
 		// Switch back to the default window
 		remDriver.switchTo().window(winHandleBefore);
-		
+
 		searchPickerSwitch(searchEnhancedFields("Primary Product"), winHandleBefore);
 
-		typeValue(searchInputInFrame(), program);
+		typeValue(searchInputInFrame(), data.get("StudentProgram"));
 		clickElement(clickGo());
 
 		sleep(2);
@@ -454,26 +517,167 @@ public class SalesForceNewLeadPageObjects extends Commons {
 		// Switch to another results iframe and select the result
 		remDriver.switchTo().defaultContent();
 		remDriver.switchTo().frame("resultsFrame");
-		clickElement(selectSearchResult(program));
+		clickElement(programSelection());
 
 		// Switch back to the default window
 		remDriver.switchTo().window(winHandleBefore);
 
 		// Enter required Data fields
-		typeValue(enterDataFields("Email Address (*)"), data.get("email"));
-		typeValue(enterDataFields("Primary Phone Number"), data.get("phone"));
-		typeValue(enterDataFields("First Name (*)"), data.get("firstName"));
-		typeValue(enterDataFields("Last Name (*)"), data.get("lastName"));
-		typeValue(enterDataFields("Address Line 1"), data.get("street1"));
-		typeValue(enterDataFields("City (*)"), data.get("city"));
-		typeValue(enterDataFields("State (*)"), data.get("state"));
-		typeValue(enterDataFields("Zip/Postal Code (*)"), data.get("zipcode"));
+		typeValue(enterDataFields("Email Address (*)"), data1.get("email"));
+		typeValue(enterDataFields("Primary Phone Number"), data1.get("phone"));
+		typeValue(enterDataFields("First Name (*)"), data1.get("firstName"));
+		typeValue(enterDataFields("Last Name (*)"), data1.get("lastName"));
+		typeValue(enterDataFields("Address Line 1"), data1.get("street1"));
+		typeValue(enterDataFields("City (*)"), data1.get("city"));
+		typeValue(enterDataFields("State (*)"), data1.get("state"));
+		typeValue(enterDataFields("Zip/Postal Code (*)"), data1.get("zipcode"));
 		typeValue(enterDataFields("Country (*)"), "United States");
 
 		clickElement(saveLead());
 
-		// Click Edit again to select Stage & Admission Status and Save
+		// Select the contact link after save
+		clickElement(selectSearchResult(data1.get("firstName").toLowerCase().replaceAll("zz_", "")));
+
+		// Click opportunity link to select Stage & Admission Status and Save
+		List<WebElement> opportunities = getListValues(
+				selectSearchResult(data1.get("firstName").toLowerCase().replaceAll("zz_", "")));
+		opportunities.get(4).click();
+
+		String stageStatus = getText(opportunityDetail("Stage"));
+		String dispositionStatus = getText(opportunityDetail("Disposition"));
+		reportLog("Stage after lead created : " + stageStatus + "<br>");
+		reportLog("Disposition after lead created : " + dispositionStatus + "<br>");
+
+		// Edit Opportunity
 		clickElement(clickEdit());
+
+		searchPickerSwitch(selectSearchPicker("Selected Program Start Date"), winHandleBefore);
+		typeValue(searchInputInFrame(), data.get("StartDateName"));
+		clickElement(clickGo());
+
+		sleep(2);
+
+		// Switch to another results iframe and select the result
+		remDriver.switchTo().defaultContent();
+		remDriver.switchTo().frame("resultsFrame");
+		clickElement(selectSearchResult("SD"));
+
+		sleep(2);
+		// Switch back to the default window
+		remDriver.switchTo().window(winHandleBefore);
+
+		clickElement(enterDataFields("Application Started"));
+		clickElement(enterDataFields("Application Submitted"));
+		clickElement(saveLead());
+
+		stageStatus = getText(opportunityDetail("Stage"));
+		dispositionStatus = getText(opportunityDetail("Disposition"));
+		reportLog("Stage after opportunity updated with Start date name selection : " + stageStatus + "<br>");
+		reportLog(
+				"Disposition after opportunity updated with Start date name selection : " + dispositionStatus + "<br>");
+
+		// Edit Opportunity again
+		clickElement(clickEdit());
+
+		sleep(2);
+		clickElement(enterDataFields("State Agreement"));
+		clickElement(enterDataFields("English Proficiency"));
+		selectByVisibleText(selectAdmissionStatus("Customer Motivation"), "Career Advancement");
+
+		clickElement(selectOption("EA Quality Check Complete"));
+		selectByVisibleText(selectAdmissionStatus("Review Type"), "Admissions Decision Only");
+
+		clickElement(saveLead());
+
+		stageStatus = getText(opportunityDetail("Stage"));
+		dispositionStatus = getText(opportunityDetail("Disposition"));
+		reportLog("Stage after opportunity updated with EA Consultation Details : " + stageStatus + "<br>");
+		reportLog("Disposition after opportunity updated with EA Consultation Details : " + dispositionStatus + "<br>");
+
+		clickElement(selectCaseNumber("Case Number"));
+		clickElement(clickOnDetails());
+
+		clickElement(clickEdit());
+		selectByVisibleText(editCaseDetailsSelection("Student Type"), "A");
+		selectByVisibleText(selectAdmissionStatus("Final Decision"), "AD - Regular Admit");
+		clickElement(enterDataFields("Admission Decision Letter Attached"));
+		clickElement(caseEditCheckbox("Document Entry Completed"));
+		clickElement(caseEditCheckbox("TOC Not Awarded"));
+
+		clickElement(saveLead());
+
+		clickElement(closeCase());
+		selectByVisibleText(selectAdmissionStatus("Status"), "Closed");
+		sleep(2);
+		selectByVisibleText(selectAdmissionStatus("Case Closed Reason"), "RA Completed");
+		clickElement(saveLead());
+
+		String caseStatus = getText(caseDetails("Status"));
+		reportLog("Case status after the close: " + caseStatus + "<br>");
+
+		clickElement(clickLink("Opportunity"));
+		stageStatus = getText(opportunityDetail("Stage"));
+		dispositionStatus = getText(opportunityDetail("Disposition"));
+		reportLog("Stage status after case is closed : " + stageStatus + "<br>");
+		reportLog("Disposition status after case is closed : " + dispositionStatus + "<br>");
+
+		// Open new tab
+		((JavascriptExecutor) remDriver).executeScript("window.open()");
+		ArrayList<String> tabs = new ArrayList<String>(driver.getWindowHandles());
+		remDriver.switchTo().window(tabs.get(1));
+
+		// Login to Salesforce to check for the data
+		loginToSalesforce(data.get("uatlogin"), data.get("Password"));
+
+		sleep(20);
+		typeValue(searchHeader(), data1.get("firstName") + " " + data1.get("lastName"));
+		clickElement(clickSearch());
+
+		clickElement(opportunityLink());
+		stageStatus = getText(caseDetails("Stage"));
+		reportLog("Stage status in UAT after case close: " + stageStatus + "<br>");
+		
+		clickElement(clickEdit());
+		selectByVisibleText(selectAdmissionStatus("Stage"), "Student");
+		sleep(2);
+		clickElement(saveLead());
+		sleep(5);
+		remDriver.navigate().refresh();
+		jseClickElement(studentProgramNum());
+		
+		clickElement(clickEdit());
+		clickElement(selectIsStudentProgActive());
+		clickElement(saveLead());
+		sleep(2);
+
+		clickElement(applicationLink());
+		String bannerIdInUAT = getText(bannerId());
+		reportLog("Banner Id displayed in Opportunity Details Page in UAT: " + bannerIdInUAT + "<br>");
+
+		// Switch to the main tab
+		sleep(20);
+		remDriver.switchTo().window(tabs.get(0));
+		remDriver.navigate().refresh();
+
+		String bannerIdInQA2 = getText(bannerId());
+		reportLog("Banner Id displayed in Opportunity Details Page: " + bannerIdInUAT + "<br>");
+
+		if (bannerIdInUAT.equals(bannerIdInQA2)) {
+			reportLog("Banner Id matched in both the Environments");
+		} else {
+			reportLog("Banner Id not matched while comparing both the Environments");
+		}
+
+		clickElement(clickLink("Brand Profile"));
+		String bannerIdInBrandProfile = getText(bannerId());
+		if (bannerIdInBrandProfile.isEmpty()) {
+			bannerIdInBrandProfile = "Banner Id is Empty";
+		}
+		reportLog("Banner Id displayed in Opportunity Details (Brand Profile) : " + bannerIdInBrandProfile + "<br>");
+
+		reportLog("******************************************************************");
+		reportLog("Testcase Finished.");
+		reportLog("******************************************************************<br>");
 	}
 
 	private Map<String, String> getStudentData() {

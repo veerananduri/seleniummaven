@@ -58,7 +58,8 @@ public class SalesForceNewLeadFlowTest extends Setup {
 		salesForceNewLeadPageObjects.navigateToClassicView();
 		
 		//Create new lead
-		salesForceNewLeadPageObjects.createNewLeadL1(data.get("StudentProgram"));
+		salesForceNewLeadPageObjects.createNewLeadL1(data);
+		
 	}
 	
 	@DataProvider(name = "StudentDataL2")

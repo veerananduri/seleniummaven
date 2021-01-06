@@ -126,8 +126,13 @@ public class Commons extends Setup {
 
 	// Get Text
 	public String getText(By locator) {
-		WebElement element = webDriverWait(locator);
-		return element.getText();
+		try {
+			WebElement element = webDriverWait(locator);
+			return element.getText();
+		} catch (Exception e) {
+			System.out.println("Exception observed while capturing the element text : "+e.getMessage());
+			return "null";
+		}
 	}
 	
 	//Perform with Actions class
