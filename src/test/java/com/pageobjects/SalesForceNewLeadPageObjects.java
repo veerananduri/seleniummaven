@@ -415,6 +415,7 @@ public class SalesForceNewLeadPageObjects extends Commons {
 		selectByVisibleText(selectAdmissionStatus("Admissions Status"), "AD Admitted");
 		clickElement(saveLead());
 
+		sleep(10);
 		// click edit again and select Stage as Student and Save
 		clickElement(clickEdit());
 		selectByVisibleText(selectStage(), "Student");
@@ -635,8 +636,11 @@ public class SalesForceNewLeadPageObjects extends Commons {
 
 		clickElement(opportunityLink());
 		stageStatus = getText(caseDetails("Stage"));
-		reportLog("Stage status in UAT after case close: " + stageStatus + "<br>");
-		
+		reportLog("Stage status in UAT after case close: " + stageStatus + "<br>");		
+
+		// Click Edit again to select Stage & Admission Status and Save
+		sleep(20);
+
 		clickElement(clickEdit());
 		selectByVisibleText(selectAdmissionStatus("Stage"), "Student");
 		sleep(2);
@@ -644,7 +648,7 @@ public class SalesForceNewLeadPageObjects extends Commons {
 		sleep(5);
 		remDriver.navigate().refresh();
 		jseClickElement(studentProgramNum());
-		
+
 		clickElement(clickEdit());
 		clickElement(selectIsStudentProgActive());
 		clickElement(saveLead());
